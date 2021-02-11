@@ -1,35 +1,16 @@
-/**
- *
- * M413 - TD3 - Taquin Game
- * *
- * @author Jean-Michel Bruneau
- *    @copyright UCA - IUT -INFO
- * @version    1.0
- * @date            2021-01-31
- *
- */
-"use strict";
-
-// M413 - Taquin
-let message = 'JavaScript is ok :)';
-// alert( message);
-console.log(message);
-
 function onLoad() {
-    console.log('Processus de chargement du document terminé…');
-    //
-    // All your JavaScript code goes here !
-    //
-    generateGame(4) // Default game
+     generateGame(4) // Default game
     init()
 }
 
-// Toute les ressources de la page sont complètement chargées.
-window.onload = onLoad;
+//OPTIMISED
+function getBoxes() {
+    return document.querySelectorAll("div.box"); // Array des element ".box"
+}
 
 //OPTIMISED
 function init() {
-    let boxes = document.getElementsByClassName("box") // Array des element ".box"
+    let boxes = getBoxes()
     for (let i = 0; i < boxes.length; i++) {
         boxes[i].addEventListener("click", selection) //On ajout l'évènement click
     }
@@ -41,17 +22,17 @@ function selection(event) {
     let r = getRC(target.id)[0] // Numero de ligne
     let c = getRC(target.id)[1] // Numero de colonne
     let idToCheck; //idToCheck prend la taille du nombre de déplacement maximum
-    let length = document.getElementsByClassName("box").length //Recuperation de la taille du tableau
-    idToCheck = nextTo(Math.sqrt(length), r, c)
+
+    idToCheck = nextTo(Math.sqrt(getBoxes().length), r, c)
     //Boucle qui permet de déplacer l'élément cliqué sur la place vide
     for (let idToCheckElement of idToCheck) {
         if (idToCheckElement !== undefined) { //On vérifie que l'élément du tableau est défini
             idToCheckElement = toId(idToCheckElement[0], idToCheckElement[1])
-            let dc = document.getElementById(idToCheckElement); //Récupération de l'élément via son id existant au préalable
+            let dc = document.querySelector("div#" + idToCheckElement); //Récupération de l'élément via son id existant au préalable
             if (dc.classList.contains("empty")) { //Si l'élément a la classe empty
 
-                let from = document.getElementById(target.id);
-                let to = document.getElementById(dc.id);
+                let from = document.querySelector("div#" + target.id);
+                let to = document.querySelector("div#" + dc.id);
                 let content = from.innerHTML //On sauvegarde l'HTML de notre cible de base
                 from.innerHTML = "" //On vide le contenu HTML de notre cible
                 from.classList.add("empty") //On ajoute la classe empty à la cible
@@ -66,13 +47,13 @@ function selection(event) {
 
 //OPTIMISED
 function checkVictory() {
-    let boxes = document.getElementsByClassName("box") // Recuperation des élements ".box"
+    let boxes = getBoxes() // Recuperation des élements ".box"
         , value = []; // Tableau des valeurs
     for (let i = 0; i < boxes.length; i++)
         value.push(parseInt(boxes[i].innerText)) // On ajoute dans le tableau des valeurs chaque valeurs une a une
     if (value.isSortedByValue()) { // Si les valeurs sont trier par valeur
-        document.getElementById("ifVictory").style.display = "block" // On affiche le modal "ifVictory"
-        document.getElementById("size").innerText = Math.sqrt(boxes.length) + "x" + Math.sqrt(boxes.length) // On écrit dans quelle était la taille de la partie
+        document.querySelector("div#ifVictory").style.display = "block" // On affiche le modal "ifVictory"
+        document.querySelector("div#size").innerText = Math.sqrt(boxes.length) + "x" + Math.sqrt(boxes.length) // On écrit dans quelle était la taille de la partie
     }
 }
 
@@ -96,7 +77,7 @@ Array.prototype.isSortedByValue = function () {
 
 //OPTIMISED
 function cheat() {
-    let boxes = document.getElementsByClassName("box") // Recuperation des élements ".box"
+    let boxes = getBoxes() // Recuperation des élements ".box"
         , value = [] // Tableau des valeurs
 
     for (let i = 0; i < boxes.length; i++)
@@ -116,9 +97,10 @@ function cheat() {
 
 //OPTIMISED
 function generateGameInput(input) {
-    let size = document.getElementById(input).value
+    let size = document.querySelector("input#" + input).value
     generateGame(size)
-    document.getElementById("ifVictory").style.display = "none"
+    document.querySelector("div#ifVictory").style.display = "none" // On affiche le modal "ifVictory"
+
 }
 
 //OPTIMISED
@@ -164,7 +146,7 @@ function nextTo(size, r, c) {
 
 //OPTIMISED
 function generateGame(size) {
-    let game = document.getElementById("game")
+    let game = document.querySelector("div#game")
     game.innerHTML = ""
 
     let value = gameShuffle(size)
@@ -191,6 +173,7 @@ function generateGame(size) {
     init()
 }
 
+//OPTIMISED
 function gameShuffle(size) {
     let board = []
     for (let i = 0; i < (size * size) - 1; i++) {
@@ -208,7 +191,6 @@ function gameShuffle(size) {
         board[nextID] = ""
         empty = [chooseNext[0], chooseNext[1]]
     }
-
 
     //Normalisation de la partie
     while (board[board.length - 1] !== "") {
@@ -234,3 +216,6 @@ function gameShuffle(size) {
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
+
+// Toute les ressources de la page sont complètement chargées.
+window.onload = onLoad;
