@@ -53,7 +53,7 @@ function checkVictory() {
         value.push(parseInt(boxes[i].innerText)) // On ajoute dans le tableau des valeurs chaque valeurs une a une
     if (value.isSortedByValue()) { // Si les valeurs sont trier par valeur
         document.querySelector("div#ifVictory").style.display = "block" // On affiche le modal "ifVictory"
-        document.querySelector("div#size").innerText = Math.sqrt(boxes.length) + "x" + Math.sqrt(boxes.length) // On écrit dans quelle était la taille de la partie
+        document.querySelector("span#size").innerText = Math.sqrt(boxes.length) + "x" + Math.sqrt(boxes.length) // On écrit dans quelle était la taille de la partie
     }
 }
 
@@ -115,6 +115,7 @@ function getRC(id) {
     return [r, c]
 }
 
+//OPTIMISED
 function toId(r, c) {
     return "r" + r + "-c" + c
 }
@@ -213,6 +214,7 @@ function gameShuffle(size) {
     return board
 }
 
+//OPTIMISED
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
