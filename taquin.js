@@ -1,6 +1,32 @@
 function onLoad() {
-     generateGame(4) // Default game
-    init()
+    //generateGame(4) // Default game
+    init(4)
+}
+
+let taquinGrid;
+
+//OPTIMISED
+function init(size) {
+    let values = gameShuffle(size)
+
+    taquinGrid = Object.create(Grid)
+    taquinGrid.size = size;
+    taquinGrid.values = values;
+
+    displayGrid()
+}
+
+const Grid = {
+    size: null,
+    values: null,
+    victoryState: false
+}
+
+const Case = {
+    r: null,
+    c: null,
+    nextTo: null,
+    value: null //Seule valeur qui peut changer avec le temps
 }
 
 //OPTIMISED
@@ -8,9 +34,30 @@ function getBoxes() {
     return document.querySelectorAll("div.box"); // Array des element ".box"
 }
 
-//OPTIMISED
-function init() {
-    let boxes = getBoxes()
+function displayGrid() {
+    let game = document.querySelector("div#game")
+    game.innerHTML = ""
+
+    for (let r = 1; r <= taquinGrid.size; r++) {
+        let row = document.createElement("div")
+        row.classList.add("row")
+        for (let c = 1; c <= taquinGrid.size; c++) {
+            let div = document.createElement("div")
+            div.setAttribute('id', 'r' + r + '-c' + c)
+            div.classList.add('box')
+            if (taquinGrid.values[getArrayId(taquinGrid.size, r, c)].value === "") {
+                div.classList.add('empty')
+            } else {
+                let span = document.createElement("span")
+                let text = document.createTextNode(taquinGrid.values[getArrayId(taquinGrid.size, r, c)].value)
+                span.appendChild(text)
+                div.appendChild(span)
+            }
+            row.appendChild(div)
+        }
+        game.appendChild(row)
+    }
+    let boxes = getBoxes();
     for (let i = 0; i < boxes.length; i++) {
         boxes[i].addEventListener("click", selection) //On ajout l'évènement click
     }
@@ -18,19 +65,18 @@ function init() {
 
 //OPTIMISED
 function selection(event) {
-    let target = (event.target.tagName === "SPAN") ? event.target.parentElement : event.target; //Si on clique sur le span on selectione l'id sinon l'id
-    let r = getRC(target.id)[0] // Numero de ligne
-    let c = getRC(target.id)[1] // Numero de colonne
-    let idToCheck; //idToCheck prend la taille du nombre de déplacement maximum
+    let target = (event.target.tagName === "SPAN") ? event.target.parentElement : event.target //Si on clique sur le span on selectione l'id sinon l'id
+        , selectCase = getCase(!isNaN(parseInt(target.innerText)) ? parseInt(target.innerText) : "")
 
-    idToCheck = nextTo(Math.sqrt(getBoxes().length), r, c)
+    let idToCheck = selectCase.nextTo; //idToCheck récupère les cases autour de la selection
+
+    console.log(idToCheck)
     //Boucle qui permet de déplacer l'élément cliqué sur la place vide
     for (let idToCheckElement of idToCheck) {
         if (idToCheckElement !== undefined) { //On vérifie que l'élément du tableau est défini
             idToCheckElement = toId(idToCheckElement[0], idToCheckElement[1])
             let dc = document.querySelector("div#" + idToCheckElement); //Récupération de l'élément via son id existant au préalable
             if (dc.classList.contains("empty")) { //Si l'élément a la classe empty
-
                 let from = document.querySelector("div#" + target.id);
                 let to = document.querySelector("div#" + dc.id);
                 let content = from.innerHTML //On sauvegarde l'HTML de notre cible de base
@@ -40,6 +86,7 @@ function selection(event) {
                 to.innerHTML = content //On lui met le contenu de la balise target sauvegardé dans content
                 console.log("Déplacement de " + from.id + " à " + to.id)
             }
+
         }
     }
     checkVictory() //Verification si le coup est une victoire
@@ -57,23 +104,14 @@ function checkVictory() {
     }
 }
 
-//OPTIMISED
-Array.prototype.sortByValue = function () {
-    let array = this.slice(); //On copie le tableau dans un nouveau tableau
-    array.sort(function (a, b) {
-        return a - b;
-    }); //On trie le tableau par valeur
-    return array
+function getCase(value) {
+    for (let i = 0; i < taquinGrid.values.length; i++) {
+        if (taquinGrid.values[i].value === value)
+            return taquinGrid.values[i]
+    }
+    return false
 }
 
-//OPTIMISED
-Array.prototype.isSortedByValue = function () {
-    let array = this.sortByValue()
-    for (let i = 0; i < this.length - 1; i++) { // On verifie pour chaque element de la chaine - 1 (le -1 est la valeur NaN)
-        if (this[i] !== array[i]) return false // Si il y a une différence alors ca retourne false
-    }
-    return true; // Les arrays sont identique, on renvoie true
-}
 
 //OPTIMISED
 function cheat() {
@@ -98,7 +136,7 @@ function cheat() {
 //OPTIMISED
 function generateGameInput(input) {
     let size = document.querySelector("input#" + input).value
-    generateGame(size)
+    init(size)
     document.querySelector("div#ifVictory").style.display = "none" // On affiche le modal "ifVictory"
 
 }
@@ -146,35 +184,6 @@ function nextTo(size, r, c) {
 }
 
 //OPTIMISED
-function generateGame(size) {
-    let game = document.querySelector("div#game")
-    game.innerHTML = ""
-
-    let value = gameShuffle(size)
-
-    for (let r = 1; r <= size; r++) {
-        let row = document.createElement("div")
-        row.classList.add("row")
-        for (let c = 1; c <= size; c++) {
-            let div = document.createElement("div")
-            div.setAttribute('id', 'r' + r + '-c' + c)
-            div.classList.add('box')
-            if (value[getArrayId(size, r, c)] === "") {
-                div.classList.add('empty')
-            } else {
-                let span = document.createElement("span")
-                let text = document.createTextNode(value[getArrayId(size, r, c)])
-                span.appendChild(text)
-                div.appendChild(span)
-            }
-            row.appendChild(div)
-        }
-        game.appendChild(row)
-    }
-    init()
-}
-
-//OPTIMISED
 function gameShuffle(size) {
     let board = []
     for (let i = 0; i < (size * size) - 1; i++) {
@@ -185,9 +194,9 @@ function gameShuffle(size) {
     let empty = [parseInt(size), parseInt(size)]
     for (let i = 0; i < size * multiplier; i++) {
         let nextToEmpty = nextTo(size, empty[0], empty[1])
-        let chooseNext = nextToEmpty[getRandomInt(nextToEmpty.length)]
-        let currentID = getArrayId(size, empty[0], empty[1]);
-        let nextID = getArrayId(size, chooseNext[0], chooseNext[1]);
+            , chooseNext = nextToEmpty[getRandomInt(nextToEmpty.length)]
+            , currentID = getArrayId(size, empty[0], empty[1])
+            , nextID = getArrayId(size, chooseNext[0], chooseNext[1]);
         board[currentID] = board[nextID]
         board[nextID] = ""
         empty = [chooseNext[0], chooseNext[1]]
@@ -211,12 +220,41 @@ function gameShuffle(size) {
         empty = [chooseNext[0], chooseNext[1]]
     }
 
-    return board
+    let caseBoard = []
+    for (let r = 1; r <= size; r++) {
+        for (let c = 1; c <= size; c++) {
+            let newCase = Object.create(Case)
+            newCase.r = r;
+            newCase.c = c;
+            newCase.nextTo = nextTo(4, r, c)
+            newCase.value = board[getArrayId(4, r, c)]
+            caseBoard.push(newCase)
+        }
+    }
+    return caseBoard
 }
 
 //OPTIMISED
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
+}
+
+//OPTIMISED
+Array.prototype.sortByValue = function () {
+    let array = this.slice(); //On copie le tableau dans un nouveau tableau
+    array.sort(function (a, b) {
+        return a - b;
+    }); //On trie le tableau par valeur
+    return array
+}
+
+//OPTIMISED
+Array.prototype.isSortedByValue = function () {
+    let array = this.sortByValue()
+    for (let i = 0; i < this.length - 1; i++) { // On verifie pour chaque element de la chaine - 1 (le -1 est la valeur NaN)
+        if (this[i] !== array[i]) return false // Si il y a une différence alors ca retourne false
+    }
+    return true; // Les arrays sont identique, on renvoie true
 }
 
 // Toute les ressources de la page sont complètement chargées.
