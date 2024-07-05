@@ -2,17 +2,22 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8"/>
-    <meta name="author" content="Arckene"/>
+    <meta name="author" content="Thomas Farineau"/>
     <title>Jeux de Taquin</title>
-    <link rel="stylesheet" type="text/css" href="taquin.css"/>
-    <script defer="defer" src="taquin.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/style.css"/>
+    <script defer="defer" src="scripts/taquin.js"></script>
 </head>
-<body>
-<h1>Jeux de Taquin</h1>
-<div id="generate">
-    <label for="generateInput">Taille du jeu: </label><input type="number" value="4" id="generateInput">
-    <button onclick="generateGameInput('generateInput')">Générer une partie</button>
-    <button onclick="cheat()">Tricher :)</button>
+<body class="noto-sans">
+<div class="container">
+    <header>
+        <h1>15-Puzzle Game</h1>
+        <div class="theme-switcher"></div>
+    </header>
+    <section class="options">
+        <label>Board Size<input type="number" value="4" id="generateInput"></label>
+        <button onclick="generateGameInput('generateInput')">New game</button>
+        <button onclick="cheat()">👹 Cheat 👹</button>
+    </section>
 </div>
 
 <div id="container">
@@ -22,13 +27,13 @@
 
 <div id="ifVictory">
     <div>
-        <h1>Bravo, vous avez gagné !</h1>
-        <p>Vous venez de gagner une partie de taille <span id="size"></span></p>
-        <label for="generateInputVictory">Taille du jeu: </label><input type="number" value="4"
+        <h1>You win !</h1>
+        <p>You just win a game with size of <span id="size"></span>.</p>
+        <label for="generateInputVictory">Board size: </label><input type="number" value="4"
                                                                         id="generateInputVictory">
-        <button onclick="generateGameInput('generateInputVictory')">Nouvelle partie</button>
+        <button onclick="generateGameInput('generateInputVictory')">New game</button>
     </div>
 </div>
-
+<script src="scripts/theme.js"></script>
 </body>
 </html>

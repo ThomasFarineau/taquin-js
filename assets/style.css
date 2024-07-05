@@ -1,0 +1,262 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+.noto-sans {
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+.neon-1 {
+  box-shadow: 0 0 0.25em #efcfd7, inset 0 0 0.25em #efcfd7, 0 0 0.5em rgba(191, 64, 94, 0.95), inset 0 0 0.5em rgba(191, 64, 94, 0.95), 0 0 1em rgba(191, 64, 94, 0.95), inset 0 0 1em rgba(191, 64, 94, 0.95);
+  border-color: #efcfd7;
+}
+
+.neon-2 {
+  box-shadow: 0 0 0.25em #fff4d9, inset 0 0 0.25em #fff4d9, 0 0 0.5em rgba(255, 209, 102, 0.95), inset 0 0 0.5em rgba(255, 209, 102, 0.95), 0 0 1em rgba(255, 209, 102, 0.95), inset 0 0 1em rgba(255, 209, 102, 0.95);
+  border-color: #fff4d9;
+}
+
+.neon-3 {
+  box-shadow: 0 0 0.25em #c1f5e7, inset 0 0 0.25em #c1f5e7, 0 0 0.5em rgba(6, 214, 160, 0.95), inset 0 0 0.5em rgba(6, 214, 160, 0.95), 0 0 1em rgba(6, 214, 160, 0.95), inset 0 0 1em rgba(6, 214, 160, 0.95);
+  border-color: #c1f5e7;
+}
+
+.neon-4 {
+  box-shadow: 0 0 0.25em #c4e2ec, inset 0 0 0.25em #c4e2ec, 0 0 0.5em rgba(17, 138, 178, 0.95), inset 0 0 0.5em rgba(17, 138, 178, 0.95), 0 0 1em rgba(17, 138, 178, 0.95), inset 0 0 1em rgba(17, 138, 178, 0.95);
+  border-color: #c4e2ec;
+}
+
+.neon-5 {
+  box-shadow: 0 0 0.25em #ebd2ee, inset 0 0 0.25em #ebd2ee, 0 0 0.5em rgba(176, 73, 188, 0.95), inset 0 0 0.5em rgba(176, 73, 188, 0.95), 0 0 1em rgba(176, 73, 188, 0.95), inset 0 0 1em rgba(176, 73, 188, 0.95);
+  border-color: #ebd2ee;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  transition: background-color 0.15s ease-in-out;
+}
+html body {
+  background-image: linear-gradient(125deg, #ffffff 10%, #f5f8fb 45%, #e0eaf3 100%);
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #000000;
+}
+html body header .theme-switcher {
+  background-image: url("icons/dark.svg");
+}
+html body .options label {
+  background: #e6e6e6;
+}
+html body .options label input {
+  color: #000000;
+  background: #cccccc;
+}
+html body .options button {
+  background: #e6e6e6;
+  color: #000000;
+}
+html body .options button:hover {
+  background: #cccccc;
+}
+html #ifVictory {
+  background: rgba(255, 255, 255, 0.75);
+}
+html #ifVictory div {
+  color: #000000;
+}
+html.dark .theme-switcher {
+  filter: invert(1);
+}
+html.dark body {
+  background-image: linear-gradient(125deg, #1d1d1e 10%, #1e2125 45%, #202a34 100%);
+  min-height: 100vh;
+  background-color: #1d1d1e;
+  color: white;
+}
+html.dark body header .theme-switcher {
+  background-image: url("icons/light.svg");
+}
+html.dark body .options label {
+  background: #363638;
+}
+html.dark body .options label input {
+  color: white;
+  background: #4f4f52;
+}
+html.dark body .options button {
+  background: #363638;
+  color: white;
+}
+html.dark body .options button:hover {
+  background: #4f4f52;
+}
+html.dark #ifVictory {
+  background: rgba(0, 0, 0, 0.75);
+}
+html.dark #ifVictory div {
+  color: white;
+}
+html.light body {
+  background-image: linear-gradient(125deg, #ffffff 10%, #f5f8fb 45%, #e0eaf3 100%);
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #000000;
+}
+html.light body header .theme-switcher {
+  background-image: url("icons/dark.svg");
+}
+html.light body .options label {
+  background: #e6e6e6;
+}
+html.light body .options label input {
+  color: #000000;
+  background: #cccccc;
+}
+html.light body .options button {
+  background: #e6e6e6;
+  color: #000000;
+}
+html.light body .options button:hover {
+  background: #cccccc;
+}
+html.light #ifVictory {
+  background: rgba(255, 255, 255, 0.75);
+}
+html.light #ifVictory div {
+  color: #000000;
+}
+html.light .box {
+  box-shadow: none;
+  background: #bfbfbf !important;
+  border-color: #bfbfbf !important;
+}
+html.light .box.empty {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+body .container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto 3rem;
+}
+body header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+}
+body header h1 {
+  font-size: 1.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  user-select: none;
+}
+body header .theme-switcher {
+  width: 2rem;
+  aspect-ratio: 1;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+}
+body .options {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+body .options label {
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  padding-left: 0.75rem;
+  user-select: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+body .options label input {
+  border: 0;
+  outline: 0;
+  padding: 0.5rem;
+  margin-left: 0.75rem;
+  font-size: 1rem;
+  border-radius: 0 0.25rem 0.25rem 0;
+  transition: background-color 0.15s ease-in-out;
+}
+body .options button {
+  border: 0;
+  outline: 0;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out;
+}
+body #container {
+  position: relative;
+}
+body #container #game {
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+body #container #game .row {
+  display: flex;
+}
+body #container #game .box {
+  border-style: solid;
+  border-width: 0.25em;
+  width: 100px;
+  height: 100px;
+  z-index: 1;
+  transition: transform 0.15s ease-in-out;
+  text-align: center;
+  position: absolute;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 1em;
+}
+body #container #game .box.empty {
+  border-color: transparent;
+  box-shadow: none;
+}
+body #container #game .box span {
+  display: inline-block;
+  height: 50%;
+  transform: translateY(60%);
+  font-size: 2em;
+  user-select: none;
+}
+
+#ifVictory {
+  position: fixed;
+  z-index: 9;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: none;
+}
+#ifVictory div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 11;
+  transform: translate(-50%, -50%);
+  padding: 3rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 3px 8px 1px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/*# sourceMappingURL=style.css.map */

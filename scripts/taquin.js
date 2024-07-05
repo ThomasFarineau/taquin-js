@@ -1,8 +1,8 @@
 "use strict";
 
-function onLoad() {
-    init(5)
-}
+const onLoad = () => {
+    init(4);
+};
 
 let taquinGrid;
 
@@ -11,7 +11,6 @@ function init(size) {
     taquinGrid = Object.create(Grid)
     taquinGrid.size = size;
     taquinGrid.values = gameShuffle();
-    console.log(taquinGrid)
     displayGrid()
 }
 
@@ -25,7 +24,11 @@ const Case = {
     r: null,
     c: null,
     nextTo: null,
-    value: null //Seule valeur qui peut changer avec le temps
+    color: null,
+    value: null, //Seule valeur qui peut changer avec le temps
+    setColor: function (color) {
+        if(this.color === null) this.color = color
+    }
 }
 
 //OPTIMISED
@@ -35,60 +38,89 @@ function getBoxes() {
 
 //OPTIMISED
 function displayGrid() {
-    let game = document.querySelector("div#game")
-    game.innerHTML = ""
+    let game = document.querySelector("div#game");
+    game.innerHTML = "";
+    game.style.position = 'relative';
+
+    const boxSize = 7;
+    const gap = 1;
+    const maxNeonClass = 5; // Configurable number of neon classes
+
+    // Calculer la taille totale de la grille incluant les gaps
+    game.style.width = `calc(${boxSize * taquinGrid.size}em + ${(taquinGrid.size - 1) * gap}em)`;
+    game.style.height = `calc(${boxSize * taquinGrid.size}em + ${(taquinGrid.size - 1) * gap}em)`;
 
     for (let r = 1; r <= taquinGrid.size; r++) {
-        let row = document.createElement("div")
-        row.classList.add("row")
         for (let c = 1; c <= taquinGrid.size; c++) {
-            let div = document.createElement("div")
-            div.setAttribute('id', 'r' + r + '-c' + c)
-            div.classList.add('box')
+            let div = document.createElement("div");
+            div.setAttribute('id', 'r' + r + '-c' + c);
+            div.classList.add('box');
+            div.style.width = `${boxSize}em`;
+            div.style.height = `${boxSize}em`;
+
+            const colorId = Math.floor(Math.random() * maxNeonClass) + 1
+            taquinGrid.values[getArrayId(r, c)].setColor(colorId);
+            const neonClass = `neon-${taquinGrid.values[getArrayId(r, c)].color}`;
+            div.classList.add(neonClass);
+
+            // Ajuster le translate pour inclure le gap
+            div.style.transform = `translate(calc(${(c - 1) * (boxSize + gap)}em), calc(${(r - 1) * (boxSize + gap)}em))`;
+
             if (taquinGrid.values[getArrayId(r, c)].value === "") {
-                div.classList.add('empty')
+                div.classList.add('empty');
             } else {
-                let span = document.createElement("span")
-                let text = document.createTextNode(taquinGrid.values[getArrayId(r, c)].value)
-                span.appendChild(text)
-                div.appendChild(span)
+                let span = document.createElement("span");
+                let text = document.createTextNode(taquinGrid.values[getArrayId(r, c)].value);
+                span.appendChild(text);
+                div.appendChild(span);
             }
-            row.appendChild(div)
+            game.appendChild(div);
         }
-        game.appendChild(row)
     }
 
     if (taquinGrid.victoryState) {
-        document.querySelector("div#ifVictory").style.display = "block" // On affiche le modal "ifVictory"
-        document.querySelector("span#size").innerText = taquinGrid.size + "x" + taquinGrid.size // On écrit dans quelle était la taille de la partie
+        document.querySelector("div#ifVictory").style.display = "block"; // On affiche le modal "ifVictory"
+        document.querySelector("span#size").innerText = taquinGrid.size + "x" + taquinGrid.size; // On écrit dans quelle était la taille de la partie
     }
 
     let boxes = getBoxes();
     for (let i = 0; i < boxes.length; i++) {
-        boxes[i].addEventListener("click", selection) //On ajout l'évènement click
+        boxes[i].addEventListener("click", selection); // On ajoute l'évènement click
     }
 }
 
+
 //OPTIMISED
 function selection(event) {
-    let target = (event.target.tagName === "SPAN") ? event.target.parentElement : event.target //Si on clique sur le span on selectione l'id sinon l'id
-        , selectCase = getCase(!isNaN(parseInt(target.innerText)) ? parseInt(target.innerText) : "")
+    let target = (event.target.tagName === "SPAN") ? event.target.parentElement : event.target; // Si on clique sur le span on selectione l'id sinon l'id
+    let selectCase = getCase(!isNaN(parseInt(target.innerText)) ? parseInt(target.innerText) : "");
 
-    let idToCheck = selectCase.nextTo; //idToCheck récupère les cases autour de la selection
+    let idToCheck = selectCase.nextTo; // idToCheck récupère les cases autour de la selection
 
-    //Boucle qui permet de déplacer l'élément cliqué sur la place vide
+    // Boucle qui permet de déplacer l'élément cliqué sur la place vide
     for (let idToCheckElement of idToCheck) {
-        if (idToCheckElement !== undefined) { //On vérifie que l'élément du tableau est défini
-            let caseNextTo = getCaseByPos(idToCheckElement[0], idToCheckElement[1]) // Récupération de la case via ses coordonnée
-            if (caseNextTo.value === "") { //Si la case a coté est vide
-                changeValue(caseNextTo.r, caseNextTo.c, selectCase.value) // On change le contenue de la case vide
-                changeValue(selectCase.r, selectCase.c, "") // On vide la case cliqué
-                //console.log("Déplacement de " + selectCase + " à " + caseNextTo
+        if (idToCheckElement !== undefined) { // On vérifie que l'élément du tableau est défini
+            let caseNextTo = getCaseByPos(idToCheckElement[0], idToCheckElement[1]); // Récupération de la case via ses coordonnées
+            if (caseNextTo.value === "") { // Si la case à côté est vide
+                // Animation de déplacement
+                let emptyDiv = document.getElementById(`r${caseNextTo.r}-c${caseNextTo.c}`);
+                let selectedDiv = document.getElementById(`r${selectCase.r}-c${selectCase.c}`);
+
+                let tempTransform = emptyDiv.style.transform;
+                emptyDiv.style.transform = selectedDiv.style.transform;
+                selectedDiv.style.transform = tempTransform;
+
+                // Après l'animation, mettre à jour les valeurs dans la grille
+                setTimeout(() => {
+                    changeValue(caseNextTo.r, caseNextTo.c, selectCase.value, selectCase.color) // On change le contenu de la case vide
+                    changeValue(selectCase.r, selectCase.c, "", null); // On vide la case cliquée
+                    checkVictory();
+                    displayGrid(); // On recharge l'affichage
+                }, 150); // Durée de l'animation en ms
+                break;
             }
         }
     }
-    checkVictory() //Verification si le coup est une victoire
-    displayGrid() // On recharge l'affichage
 }
 
 //OPTIMISED
@@ -117,9 +149,13 @@ function generateGameInput(input) {
 }
 
 //OPTIMISED
-function changeValue(r, c, value) {
-    for (let i = 0; i < taquinGrid.values.length; i++) if (taquinGrid.values[i].r === r && taquinGrid.values[i].c === c)
-        taquinGrid.values[i].value = value
+function changeValue(r, c, value, color) {
+    for (let i = 0; i < taquinGrid.values.length; i++) {
+        if (taquinGrid.values[i].r === r && taquinGrid.values[i].c === c) {
+            taquinGrid.values[i].value = value
+            taquinGrid.values[i].color = color
+        }
+    }
     return false
 }
 
@@ -247,3 +283,4 @@ Array.prototype.isSortedByValue = function () {
 
 // Toute les ressources de la page sont complètement chargées.
 window.onload = onLoad;
+

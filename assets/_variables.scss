@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+.noto-sans {
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+@function blue($color, $amount) {
+  @return mix(#3176ae, $color, $amount);
+}
+
+@function darkenOrLighten($color, $amount) {
+  @if (lightness($color) > 50) {
+    @return darken($color, $amount);
+  } @else {
+    @return lighten($color, $amount);
+  }
+}
+
+@mixin theme($background, $box-background, $empty-background, $victory-background, $text-color, $icon) {
+  body {
+    background-image: linear-gradient(125deg, $background 10%, blue($background, 5%) 45%, blue($background, 15%) 100%);
+    min-height: 100vh;
+    background-color: $background;
+    color: $text-color;
+
+    header {
+      .theme-switcher {
+        background-image: url($icon);
+      }
+    }
+
+    .options {
+      label {
+        background: darkenOrLighten($background, 10%);
+
+        input {
+          color: $text-color;
+          background: darkenOrLighten($background, 20%)
+        }
+      }
+
+      button {
+        background: darkenOrLighten($background, 10%);
+        color: $text-color;
+
+        &:hover {
+          background: darkenOrLighten($background, 20%);
+        }
+      }
+    }
+
+
+  }
+
+  #ifVictory {
+    background: $victory-background
+  }
+
+  #ifVictory div {
+    color: $text-color
+  }
+}
+
+// Dark Theme
+$dark-theme: (
+        background: #1d1d1e,
+        box-background: #FF6666,
+        empty-background: #13131d,
+        victory-background: rgba(0, 0, 0, 0.75),
+        text-color: white,
+        icon: "icons/light.svg"
+);
+
+// Light Theme
+$light-theme: (
+        background: #ffffff,
+        box-background: #c74848,
+        empty-background: #f5f5f5,
+        victory-background: rgba(255, 255, 255, 0.75),
+        text-color: #000000,
+        icon: "icons/dark.svg"
+);
+
+@mixin apply-theme($theme) {
+  @include theme(
+                  map-get($theme, background),
+                  map-get($theme, box-background),
+                  map-get($theme, empty-background),
+                  map-get($theme, victory-background),
+                  map-get($theme, text-color),
+                  map-get($theme, icon)
+  )
+}
+
+;
+
+$neon-colors: (
+        1: #bf405e,
+        2: #FFD166,
+        3: #06D6A0,
+        4: #118AB2,
+        5: #b049bc
+);
+
+$mix: 75%;
+$transparency: 0.05;
+
+@mixin neon($color) {
+    box-shadow: 0 0 0.25em mix(white, $color, $mix),
+    inset 0 0 0.25em mix(white, $color, $mix),
+    0 0 0.5em transparentize($color, $transparency),
+    inset 0 0 0.5em transparentize($color, $transparency),
+    0 0 1em transparentize($color, $transparency),
+    inset 0 0 1em transparentize($color, $transparency);
+    border-color: mix(white, $color, $mix);
+}
+
+@for $i from 1 through 5 {
+  .neon-#{$i} {
+    @include neon(map-get($neon-colors, $i));
+  }
+}
